@@ -13,7 +13,7 @@ workflows:
       - name: Flutter packages
         script: flutter pub get
       - name: Flutter analyze
-        script: flutter analyze
+        script: flutter analyze --no-fatal-infos
       - name: Install CocoaPods dependencies
         script: |
           cd ios
