@@ -1,0 +1,38 @@
+اصلاحات انجام‌شده برای بیلد اندروید
+=================================
+
+1) خطای واقعی موجود در android/gradle_debug.txt:
+   Plugin [id: 'com.android.application', version: '9.1.0'] was not found
+
+2) در android/settings.gradle.kts برای Android Gradle Plugin و Kotlin Plugin
+   resolutionStrategy اضافه شد تا Gradle به جای وابستگی به plugin-marker، ماژول اصلی
+   Maven را مستقیم دریافت کند.
+
+3) mirror گوگل (Aliyun) قبل از google() قرار داده شد، ولی مخازن رسمی نیز حفظ شدند.
+
+4) Gradle Wrapper از 9.3.1 به 9.4.1 ارتقا داده شد، چون لاگ نشان می‌دهد Gradle روی
+   Java 26 اجرا می‌شود و پشتیبانی رسمی Java 26 از Gradle 9.4 شروع شده است.
+
+5) cacheهای پروژه حذف شدند تا تنظیمات قدیمی دوباره استفاده نشوند.
+
+روی همان کامپیوتر، از پوشه اصلی پروژه اجرا کن:
+
+flutter clean
+flutter pub get
+flutter doctor -v
+flutter run
+
+اگر فقط APK می‌خواهی:
+flutter build apk --release
+
+نکته: android/local.properties در این نسخه همان مسیرهای سیستم شما را دارد:
+sdk.dir=C:\\Android\\SDK
+flutter.sdk=C:\\flutter
+
+نسخه‌های اصلی فایل‌های تغییرکرده با پسوند .bak_original داخل پروژه نگه داشته شده‌اند.
+
+6) فایل test/widget_test.dart که هنوز تست پیش‌فرض Counter و کلاس MyApp را داشت اصلاح شد؛
+   اکنون smoke test خود App را اجرا می‌کند.
+
+7) repositoryهای تکراری از android/build.gradle.kts حذف شدند تا تمام dependencyها
+   از تنظیمات یکپارچه settings.gradle.kts resolve شوند.

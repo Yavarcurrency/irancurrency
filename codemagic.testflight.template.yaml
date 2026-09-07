@@ -1,0 +1,39 @@
+# TEMPLATE: copy the workflow below into codemagic.yaml only AFTER Apple credentials are configured in Codemagic.
+# Replace YOUR_CODEMAGIC_APP_STORE_CONNECT_INTEGRATION with the integration name you created in Codemagic.
+workflows:
+  ios-testflight:
+    name: Irancurrency iOS - TestFlight
+    instance_type: mac_mini_m2
+    max_build_duration: 120
+    integrations:
+      app_store_connect: YOUR_CODEMAGIC_APP_STORE_CONNECT_INTEGRATION
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.currencyhub.app
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+      vars:
+        API_BASE_URL: https://irancurrency.eu.cc
+    scripts:
+      - name: Set up Xcode signing profiles
+        script: xcode-project use-profiles
+      - name: Flutter packages
+        script: flutter pub get
+      - name: Install CocoaPods dependencies
+        script: |
+          cd ios
+          pod install
+      - name: Build signed IPA
+        script: |
+          cd "$CM_BUILD_DIR"
+          flutter build ipa --release \
+            --dart-define=API_BASE_URL="$API_BASE_URL"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true

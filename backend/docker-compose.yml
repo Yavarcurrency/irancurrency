@@ -1,0 +1,13 @@
+services:
+  api:
+    build: .
+    restart: unless-stopped
+    environment:
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+      TOKEN_HOURS: ${TOKEN_HOURS:-24}
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - ./data:/data

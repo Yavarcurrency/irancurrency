@@ -1,0 +1,28 @@
+workflows:
+  ios-unsigned-check:
+    name: Irancurrency iOS - Unsigned Compile Check
+    instance_type: mac_mini_m2
+    max_build_duration: 120
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+      vars:
+        API_BASE_URL: https://irancurrency.eu.cc
+    scripts:
+      - name: Flutter packages
+        script: flutter pub get
+      - name: Flutter analyze
+        script: flutter analyze
+      - name: Install CocoaPods dependencies
+        script: |
+          cd ios
+          pod install
+      - name: Build iOS without code signing
+        script: |
+          cd "$CM_BUILD_DIR"
+          flutter build ios --release --no-codesign \
+            --dart-define=API_BASE_URL="$API_BASE_URL"
+    artifacts:
+      - build/ios/iphoneos/Runner.app
+      - /tmp/xcodebuild_logs/*.log
