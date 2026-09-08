@@ -1,4 +1,29 @@
 workflows:
+  web-pwa-build:
+    name: Irancurrency Web/PWA Release
+    instance_type: linux_x2
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      vars:
+        API_BASE_URL: https://irancurrency.eu.cc
+    scripts:
+      - name: Flutter packages
+        script: flutter pub get
+      - name: Flutter analyze
+        script: flutter analyze --no-fatal-infos
+      - name: Build Web/PWA release
+        script: |
+          flutter build web --release \
+            --dart-define=API_BASE_URL="$API_BASE_URL"
+      - name: Package web artifact
+        script: |
+          cd build/web
+          zip -r "$CM_BUILD_DIR/irancurrency-web-pwa.zip" .
+    artifacts:
+      - irancurrency-web-pwa.zip
+      - build/web/**
+
   ios-unsigned-check:
     name: Irancurrency iOS - Unsigned Compile Check
     instance_type: mac_mini_m2
